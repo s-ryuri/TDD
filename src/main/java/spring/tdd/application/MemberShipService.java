@@ -12,7 +12,7 @@ public class MemberShipService {
 
     private final MemberShipRepository memberShipRepository;
 
-    public MemberShip registerMemberShip(String userId, MemberShipType memberShipType, int price) {
+    public MemberShipResponse registerMemberShip(String userId, MemberShipType memberShipType, int price) {
         MemberShip byUserIdAndMemberShipType = memberShipRepository.findByUserIdAndMemberShipType(userId, memberShipType);
         if (byUserIdAndMemberShipType != null) {
             throw new MemberShipException(MemberShipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
@@ -24,6 +24,6 @@ public class MemberShipService {
                                      .point(price)
                                      .build();
 
-        return memberShipRepository.save(build);
+        return null;
     }
 }
