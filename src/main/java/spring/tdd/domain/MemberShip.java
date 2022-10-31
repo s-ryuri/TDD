@@ -34,6 +34,7 @@ public class MemberShip {
 
     private int point;
 
+    @Builder
     public MemberShip(Long id, String userId, MemberShipType memberShipType, int point) {
         this.id = id;
         this.userId = userId;
