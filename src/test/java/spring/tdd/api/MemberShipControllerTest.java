@@ -5,6 +5,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,6 +26,7 @@ import spring.tdd.application.MemberShipService;
 import spring.tdd.domain.MemberShipType;
 
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
@@ -71,60 +75,29 @@ public class MemberShipControllerTest {
                                 .build();
     }
 
-    @Test
-    void 멤버십등록실패_포인트가Null() throws Exception {
 
-        //given
+    @ParameterizedTest
+    @MethodSource("invalidMembershipAddParameter")
+    void 멤버십등록실패_잘못된파라미터(final Integer point, final MemberShipType memberShipType) throws Exception {
+
         final String url = "/api/v1/memberShip";
 
-        //when
-        ResultActions resultActions = mockMvc.perform(
+        final ResultActions resultActions = mockMvc.perform(
             MockMvcRequestBuilders.post(url)
                                   .header(MemberShipConstants.USER_ID_HEAER, "12345")
-                                  .content(gson.toJson(memberShipRequest(null, MemberShipType.KAKAO)))
+                                  .content(gson.toJson(memberShipRequest(point, memberShipType)))
                                   .contentType(MediaType.APPLICATION_JSON)
         );
 
-        // then
         resultActions.andExpect(status().isBadRequest());
-
     }
 
-    @Test
-    void 멤버십등록실패_포인트가음수() throws Exception {
-
-        //given
-        final String url = "/api/v1/memberShip";
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.post(url)
-                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
-                                  .content(gson.toJson(memberShipRequest(-1, MemberShipType.KAKAO)))
-                                  .contentType(MediaType.APPLICATION_JSON)
+    private static Stream<Arguments> invalidMembershipAddParameter() {
+        return Stream.of(
+            Arguments.of(null, MemberShipType.KAKAO),
+            Arguments.of(-1, MemberShipType.NAVER),
+            Arguments.of(10000, null)
         );
-
-        // then
-        resultActions.andExpect(status().isBadRequest());
-
-    }
-
-    @Test
-    void 멤버십등록실패_멤버십종류가Null() throws Exception {
-
-        //given
-        final String url = "/api/v1/memberShip";
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.post(url)
-                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
-                                  .content(gson.toJson(memberShipRequest(-1, null)))
-                                  .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
