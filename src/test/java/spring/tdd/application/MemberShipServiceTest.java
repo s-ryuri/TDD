@@ -58,7 +58,7 @@ public class MemberShipServiceTest {
         doReturn(memberShip()).when(memberShipRepository).save(Mockito.any(MemberShip.class));
 
         //when
-        MemberShip memberShip = memberShipService.registerMemberShip(userId, membershipType, point);
+        MemberShipResponse memberShip = memberShipService.registerMemberShip(userId, membershipType, point);
 
         //then
         assertThat(memberShip.getId()).isNotNull();
