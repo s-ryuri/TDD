@@ -2,6 +2,7 @@ package spring.tdd.api;
 
 import com.google.gson.Gson;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ public class MemberShipControllerTest {
 
     private MockMvc mockMvc;
     private Gson gson;
+
 
     @Test
     void mockMvc가NUll이아님() throws Exception {
