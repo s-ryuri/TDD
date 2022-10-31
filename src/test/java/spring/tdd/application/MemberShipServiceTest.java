@@ -140,6 +140,7 @@ public class MemberShipServiceTest {
         final MemberShipDetailResponse result = memberShipService.getMemberShip(12345L, userId);
 
         // then
+
         assertThat(result.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
         assertThat(result.getPoint()).isEqualTo(point);
     }
