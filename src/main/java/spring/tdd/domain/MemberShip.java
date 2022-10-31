@@ -25,15 +25,18 @@ public class MemberShip {
     @Column(name = "memberShip_id")
     private Long id;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "memberShip_name")
     private MemberShipType memberShipType;
 
     private int point;
 
-    @Builder
-    public MemberShip(Long id, MemberShipType memberShipType, int point) {
+    public MemberShip(Long id, String userId, MemberShipType memberShipType, int point) {
         this.id = id;
+        this.userId = userId;
         this.memberShipType = memberShipType;
         this.point = point;
     }
