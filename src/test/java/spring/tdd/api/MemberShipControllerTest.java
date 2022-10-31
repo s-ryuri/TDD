@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import spring.tdd.GlobalExceptionHandler;
 import spring.tdd.application.MemberShipErrorResult;
 import spring.tdd.application.MemberShipException;
 import spring.tdd.application.MemberShipService;
@@ -41,6 +42,7 @@ public class MemberShipControllerTest {
         //beforEach를 쓰면 null Test가 필요없음
         gson = new Gson();
         mockMvc = MockMvcBuilders.standaloneSetup(memberShipController)
+                                 .setControllerAdvice(new GlobalExceptionHandler())
                                  .build();
     }
 

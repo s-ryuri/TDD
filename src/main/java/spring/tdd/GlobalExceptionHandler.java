@@ -34,19 +34,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
                                    .collect(Collectors.toList());
 
-        log.warn("Invalid DTO Parameter Errors : {}",errorList);
+        log.warn("Invalid DTO Parameter Errors : {}", errorList);
 
         return this.makeErrorResponseEntity(errorList.toString());
     }
 
-    private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription){
+    private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(),errorDescription));
+                             .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorDescription));
     }
 
     @ExceptionHandler({MemberShipException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final MemberShipException exception){
-        log.warn("MemberShipException occur : ",exception);
+    public ResponseEntity<ErrorResponse> handleRestApiException(final MemberShipException exception) {
+        log.warn("MemberShipException occur : ", exception);
         return this.makeErrorResponseEntity(exception.getMemberShipErrorResult());
     }
 
