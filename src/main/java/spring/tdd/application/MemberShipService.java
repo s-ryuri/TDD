@@ -9,6 +9,7 @@ import spring.tdd.domain.MemberShipType;
 import spring.tdd.infra.MemberShipRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,12 +42,26 @@ public class MemberShipService {
     public List<MemberShipDetailResponse> getMemberShipList(final String userId) {
         List<MemberShip> memberShips = memberShipRepository.findAllByUserId(userId);
         return memberShips.stream()
-            .map(v -> MemberShipDetailResponse
-                .builder()
-                .id(v.getId())
-                .memberShipType(v.getMemberShipType())
-                .point(v.getPoint())
-                .build())
-            .collect(Collectors.toList());
+                          .map(v -> MemberShipDetailResponse
+                              .builder()
+                              .id(v.getId())
+                              .memberShipType(v.getMemberShipType())
+                              .point(v.getPoint())
+                              .build())
+                          .collect(Collectors.toList());
+    }
+
+    public MemberShipDetailResponse getMemberShip(final Long memberShipId, final String userId) {
+        final MemberShip memberShip = memberShipRepository.findById(memberShipId)
+                                                          .orElseThrow(() -> new MemberShipException(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND));
+
+        if(!memberShip.getUserId().equals(userId)){
+            throw new MemberShipException(MemberShipErrorResult.NOT_MEMBERSHIP_OWNER);
+        }
+        return MemberShipDetailResponse.builder()
+                                       .id(memberShip.getId())
+                                       .memberShipType(memberShip.getMemberShipType())
+                                       .point(memberShip.getPoint())
+                                       .build();
     }
 }

@@ -26,6 +26,7 @@ import spring.tdd.application.MemberShipService;
 import spring.tdd.domain.MemberShipType;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -74,7 +75,6 @@ public class MemberShipControllerTest {
                                 .memberShipType(memberShipType)
                                 .build();
     }
-
 
     @ParameterizedTest
     @MethodSource("invalidMembershipAddParameter")
@@ -148,5 +148,37 @@ public class MemberShipControllerTest {
 
         assertThat(response.getMemberShipType()).isEqualTo(MemberShipType.KAKAO);
         assertThat(response.getId()).isNotNull();
+    }
+
+    @Test
+    void 멤버십목록조회실패_사용자식별값이헤더에없음() throws Exception {
+        final String url = "/api/v1/memberShip";
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get(url)
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 멤버십목록조회성공() throws Exception {
+
+        // given
+        final String url = "/api/v1/memberShip";
+        doReturn(Arrays.asList(
+            MemberShipDetailResponse.builder().build(),
+            MemberShipDetailResponse.builder().build(),
+            MemberShipDetailResponse.builder().build()
+        )).when(memberShipService)
+          .getMemberShipList("12345");
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+        );
+
+        resultActions.andExpect(status().isOk());
+
     }
 }

@@ -14,6 +14,7 @@ import spring.tdd.infra.MemberShipRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,5 +100,47 @@ public class MemberShipServiceTest {
         final List<MemberShipDetailResponse> result = memberShipService.getMemberShipList(userId);
 
         assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    void 멤버십상세조회실패_존재하지않음() {
+        doReturn(Optional.empty())
+            .when(memberShipRepository)
+            .findById(12345L);
+
+        final MemberShipException memberShipException = assertThrows(MemberShipException.class,
+                                                                     () -> memberShipService.getMemberShip(12345L, userId));
+
+        assertThat(memberShipException.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND);
+
+    }
+
+    @Test
+    public void 멤버십상세조회실패_본인이아님() {
+        // given
+        doReturn(Optional.empty()).when(memberShipRepository).findById(12345L);
+
+        // when
+        final MemberShipException result = assertThrows(MemberShipException.class, () -> memberShipService.getMemberShip(12345L, "notowner"));
+
+        // then
+        assertThat(result.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND);
+    }
+
+    @Test
+    public void 멤버십상세조회성공() {
+        // given
+        doReturn(Optional.of(MemberShip.builder()
+                                 .memberShipType(MemberShipType.NAVER)
+                                 .point(10000)
+                                 .userId(userId)
+                                 .build())).when(memberShipRepository).findById(12345L);
+
+        // when
+        final MemberShipDetailResponse result = memberShipService.getMemberShip(12345L, userId);
+
+        // then
+        assertThat(result.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
+        assertThat(result.getPoint()).isEqualTo(point);
     }
 }
