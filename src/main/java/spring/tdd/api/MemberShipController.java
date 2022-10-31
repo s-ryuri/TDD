@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import spring.tdd.application.MemberShipService;
 
 import javax.validation.Valid;
 
@@ -18,11 +19,16 @@ import static spring.tdd.api.MemberShipConstants.USER_ID_HEAER;
 @RequiredArgsConstructor
 public class MemberShipController {
 
+    private final MemberShipService memberShipService;
+
     @PostMapping("")
     public ResponseEntity<MemberShipRequest> registerMemberShip(
         @RequestHeader(USER_ID_HEAER) final String userId,
         @RequestBody @Valid final MemberShipRequest memberShipRequest
     ) {
+
+        memberShipService.registerMemberShip(userId,memberShipRequest.getMemberShipType(), memberShipRequest.getPoint());
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
