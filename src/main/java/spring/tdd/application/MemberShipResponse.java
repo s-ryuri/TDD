@@ -11,7 +11,7 @@ import spring.tdd.domain.MemberShipType;
 public class MemberShipResponse {
 
     private final Long id;
-    private MemberShipType memberShipType;
+    private final MemberShipType memberShipType;
 
 
 }

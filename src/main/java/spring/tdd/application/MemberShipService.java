@@ -24,6 +24,11 @@ public class MemberShipService {
                                      .point(price)
                                      .build();
 
-        return null;
+        MemberShip save = memberShipRepository.save(build);
+
+        return MemberShipResponse.builder()
+                                 .id(save.getId())
+                                 .memberShipType(save.getMemberShipType())
+                                 .build();
     }
 }
