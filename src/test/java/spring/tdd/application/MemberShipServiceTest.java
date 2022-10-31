@@ -1,6 +1,5 @@
 package spring.tdd.application;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -8,9 +7,13 @@ import org.mockito.Mock;
 
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import spring.tdd.api.MemberShipDetailResponse;
 import spring.tdd.domain.MemberShip;
 import spring.tdd.domain.MemberShipType;
 import spring.tdd.infra.MemberShipRepository;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,10 +54,10 @@ public class MemberShipServiceTest {
     }
 
     @Test
-    void 멤버십등록성공(){
+    void 멤버십등록성공() {
 
         //given
-        doReturn(null).when(memberShipRepository).findByUserIdAndMemberShipType(userId,membershipType);
+        doReturn(null).when(memberShipRepository).findByUserIdAndMemberShipType(userId, membershipType);
         doReturn(memberShip()).when(memberShipRepository).save(Mockito.any(MemberShip.class));
 
         //when
@@ -65,17 +68,36 @@ public class MemberShipServiceTest {
         assertThat(memberShip.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
 
         //verify
-        verify(memberShipRepository,times(1)).findByUserIdAndMemberShipType(userId,membershipType);
-        verify(memberShipRepository,times(1)).save(any(MemberShip.class));
+        verify(memberShipRepository, times(1)).findByUserIdAndMemberShipType(userId, membershipType);
+        verify(memberShipRepository, times(1)).save(any(MemberShip.class));
 
     }
 
     private MemberShip memberShip() {
         return MemberShip.builder()
-            .id(-1L)
-            .userId(userId)
-            .point(point)
-            .memberShipType(MemberShipType.NAVER)
-            .build();
+                         .id(-1L)
+                         .userId(userId)
+                         .point(point)
+                         .memberShipType(MemberShipType.NAVER)
+                         .build();
+    }
+
+    @Test
+    void 멤버십목록조회() {
+
+        //given
+        List<MemberShip> memberShips = Arrays.asList(
+            MemberShip.builder().build(),
+            MemberShip.builder().build(),
+            MemberShip.builder().build()
+        );
+
+        doReturn(memberShips)
+            .when(memberShipRepository).findAllByUserId(userId);
+
+        //when
+        final List<MemberShipDetailResponse> result = memberShipService.getMemberShipList(userId);
+
+        assertThat(result.size()).isEqualTo(3);
     }
 }

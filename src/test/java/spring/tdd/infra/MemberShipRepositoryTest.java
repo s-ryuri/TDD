@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import spring.tdd.domain.MemberShip;
 import spring.tdd.domain.MemberShipType;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -55,5 +57,16 @@ public class MemberShipRepositoryTest {
         assertThat(findResult.getUserId()).isEqualTo("아이디!");
         assertThat(findResult.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
         assertThat(findResult.getPoint()).isEqualTo(10000);
+    }
+
+    @Test
+    void 멤버십조희_사이즈가0(){
+        //given
+
+        //when
+        List<MemberShip> result = memberShipRepository.findAllByUserId("userId");
+
+        //then
+        assertThat(result.size()).isEqualTo(0);
     }
 }

@@ -29,8 +29,8 @@ public class MemberShipController {
     ) {
 
         final MemberShipResponse memberShipResponse = memberShipService.registerMemberShip(userId,
-                                                                                     memberShipRequest.getMemberShipType(),
-                                                                                     memberShipRequest.getPoint());
+                                                                                           memberShipRequest.getMemberShipType(),
+                                                                                           memberShipRequest.getPoint());
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(memberShipResponse);
