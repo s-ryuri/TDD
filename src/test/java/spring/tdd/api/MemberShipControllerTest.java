@@ -37,7 +37,7 @@ public class MemberShipControllerTest {
 
     @Test
     void 멤버십등록실패_사용자식별값이헤더에없음() throws Exception {
-        final String url = "api/v1/memberShips";
+        final String url = "/api/v1/memberShip";
 
         ResultActions resultActions = mockMvc.perform(
             MockMvcRequestBuilders.post(url)
