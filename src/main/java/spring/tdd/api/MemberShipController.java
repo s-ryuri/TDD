@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import spring.tdd.application.MemberShipResponse;
 import spring.tdd.application.MemberShipService;
 
 import javax.validation.Valid;
@@ -22,13 +23,16 @@ public class MemberShipController {
     private final MemberShipService memberShipService;
 
     @PostMapping("")
-    public ResponseEntity<MemberShipRequest> registerMemberShip(
+    public ResponseEntity<MemberShipResponse> registerMemberShip(
         @RequestHeader(USER_ID_HEAER) final String userId,
         @RequestBody @Valid final MemberShipRequest memberShipRequest
     ) {
 
-        memberShipService.registerMemberShip(userId,memberShipRequest.getMemberShipType(), memberShipRequest.getPoint());
+        final MemberShipResponse memberShipResponse = memberShipService.registerMemberShip(userId,
+                                                                                     memberShipRequest.getMemberShipType(),
+                                                                                     memberShipRequest.getPoint());
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(memberShipResponse);
     }
 }
