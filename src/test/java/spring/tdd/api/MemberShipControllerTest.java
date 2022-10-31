@@ -18,10 +18,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import spring.tdd.GlobalExceptionHandler;
 import spring.tdd.application.MemberShipErrorResult;
 import spring.tdd.application.MemberShipException;
+import spring.tdd.application.MemberShipResponse;
 import spring.tdd.application.MemberShipService;
 import spring.tdd.domain.MemberShipType;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -141,5 +145,35 @@ public class MemberShipControllerTest {
 
         //then
         resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 멤버십등록성공() throws Exception {
+
+        final String url = "/api/v1/memberShip";
+        final MemberShipResponse memberShipResponse = MemberShipResponse.builder()
+                                                                        .id(-1L)
+                                                                        .memberShipType(MemberShipType.KAKAO)
+                                                                        .build();
+
+        doReturn(memberShipResponse).when(memberShipService)
+                                    .registerMemberShip("12345", MemberShipType.KAKAO, 10000);
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(memberShipRequest(10000, MemberShipType.KAKAO)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        resultActions.andExpect(status().isCreated());
+
+        final MemberShipResponse response = gson.fromJson(resultActions.andReturn()
+                                                                       .getResponse()
+                                                                       .getContentAsString(StandardCharsets.UTF_8),
+                                                          MemberShipResponse.class);
+
+        assertThat(response.getMemberShipType()).isEqualTo(MemberShipType.KAKAO);
+        assertThat(response.getId()).isNotNull();
     }
 }
