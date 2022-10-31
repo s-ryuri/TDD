@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import spring.tdd.domain.MemberShip;
+import spring.tdd.domain.MemberShipType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +32,7 @@ public class MemberShipRepositoryTest {
         MemberShip save = memberShipRepository.save(memberShip);
 
         assertThat(save.getId()).isNotNull();
-        assertThat(save.getMemberShipType()).isEqualTo(MembshipType.NAVER);
+        assertThat(save.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
         assertThat(save.getPoint()).isEqualTo(10000);
     }
 }
