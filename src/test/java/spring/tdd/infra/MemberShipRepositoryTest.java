@@ -31,7 +31,7 @@ public class MemberShipRepositoryTest {
         MemberShip save = memberShipRepository.save(memberShip);
 
         assertThat(save.getId()).isNotNull();
-        assertThat(save.getName()).isEqualTo("네이버");
+        assertThat(save.getMemberShipType()).isEqualTo(MembshipType.NAVER);
         assertThat(save.getPoint()).isEqualTo(10000);
     }
 }
