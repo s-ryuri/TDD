@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum MemberShipErrorResult {
 
     DUPLICATED_MEMBERSHIP_REGISTER(HttpStatus.BAD_REQUEST, "Duplicated Membership Register Request"),
-    UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"500 Error")
+    UNKNOWN_EXCEPTION(HttpStatus.BAD_REQUEST,"500 Error")
     ;
 
     private final HttpStatus httpStatus;

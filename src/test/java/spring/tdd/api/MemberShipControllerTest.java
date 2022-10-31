@@ -135,7 +135,7 @@ public class MemberShipControllerTest {
         ResultActions resultActions = mockMvc.perform(
             MockMvcRequestBuilders.post(url)
                                   .header(MemberShipConstants.USER_ID_HEAER, "12345")
-                                  .content(gson.toJson(memberShipRequest(-1, null)))
+                                  .content(gson.toJson(memberShipRequest(10000, MemberShipType.KAKAO)))
                                   .contentType(MediaType.APPLICATION_JSON)
         );
 
