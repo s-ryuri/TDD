@@ -5,15 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import spring.tdd.domain.MemberShipType;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @NoArgsConstructor
 public class MemberShipRequest {
 
-    private int point;
+    @NotNull
+    @Min(0)
+    private Integer point;
+
+    @NotNull
     private MemberShipType memberShipType;
 
     @Builder
-    public MemberShipRequest(int point, MemberShipType memberShipType) {
+    public MemberShipRequest(Integer point, MemberShipType memberShipType) {
         this.point = point;
         this.memberShipType = memberShipType;
     }
