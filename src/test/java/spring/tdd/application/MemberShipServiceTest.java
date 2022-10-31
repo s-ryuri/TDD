@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import spring.tdd.domain.MemberShip;
 import spring.tdd.domain.MemberShipType;
@@ -13,7 +14,10 @@ import spring.tdd.infra.MemberShipRepository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberShipServiceTest {
@@ -44,5 +48,34 @@ public class MemberShipServiceTest {
                                                   () -> memberShipService.registerMemberShip(userId, membershipType, point));
 
         assertThat(result.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
+    }
+
+    @Test
+    void 멤버십등록성공(){
+
+        //given
+        doReturn(null).when(memberShipRepository).findByUserIdAndMemberShipType(userId,membershipType);
+        doReturn(memberShip()).when(memberShipRepository).save(Mockito.any(MemberShip.class));
+
+        //when
+        MemberShip memberShip = memberShipService.registerMemberShip(userId, membershipType, point);
+
+        //then
+        assertThat(memberShip.getId()).isNotNull();
+        assertThat(memberShip.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
+
+        //verify
+        verify(memberShipRepository,times(1)).findByUserIdAndMemberShipType(userId,membershipType);
+        verify(memberShipRepository,times(1)).save(any(MemberShip.class));
+
+    }
+
+    private MemberShip memberShip() {
+        return MemberShip.builder()
+            .id(-1L)
+            .userId(userId)
+            .point(point)
+            .memberShipType(MemberShipType.NAVER)
+            .build();
     }
 }
