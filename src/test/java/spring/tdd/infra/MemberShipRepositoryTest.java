@@ -52,7 +52,7 @@ public class MemberShipRepositoryTest {
 
         assertThat(findResult.getId()).isNotNull();
         assertThat(findResult.getId()).isNotNull();
-        assertThat(findResult.getUserId()).isEqualTo("userId");
+        assertThat(findResult.getUserId()).isEqualTo("아이디!");
         assertThat(findResult.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
         assertThat(findResult.getPoint()).isEqualTo(10000);
     }
