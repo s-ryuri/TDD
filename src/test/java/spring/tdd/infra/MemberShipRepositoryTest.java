@@ -24,7 +24,7 @@ public class MemberShipRepositoryTest {
     @DisplayName("멤버십이 제대로 등록되는 지 확인")
     void 멤버쉽등록() {
         MemberShip memberShip = MemberShip.builder()
-                                          .name("네이버")
+                                          .memberShipType(MemberShipType.NAVER)
                                           .point(10000)
                                           .build();
 
