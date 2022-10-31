@@ -49,10 +49,29 @@ public class MemberShipControllerTest {
 
     }
 
-    private MemberShipRequest memberShipRequest(int price, MemberShipType memberShipType) {
+    private MemberShipRequest memberShipRequest(Integer price, MemberShipType memberShipType) {
         return MemberShipRequest.builder()
                                 .point(price)
                                 .memberShipType(memberShipType)
                                 .build();
+    }
+
+    @Test
+    void 멤버십등록실패_포인트가Null() throws Exception {
+
+        //given
+        final String url = "/api/v1/memberShip";
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(memberShipRequest(null, MemberShipType.KAKAO)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+
     }
 }
