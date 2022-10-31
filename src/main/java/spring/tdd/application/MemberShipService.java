@@ -7,7 +7,7 @@ import spring.tdd.domain.MemberShipType;
 @Service
 public class MemberShipService {
 
-    public MemberShip addMemberShip(String userId, MemberShipType memberShipType, int price){
+    public MemberShip registerMemberShip(String userId, MemberShipType memberShipType, int price){
         return null;
     }
 }

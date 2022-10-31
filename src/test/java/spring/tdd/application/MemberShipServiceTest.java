@@ -43,6 +43,6 @@ public class MemberShipServiceTest {
         MemberShipException result = assertThrows(MemberShipException.class,
                                                   () -> memberShipService.registerMemberShip(userId, membershipType, point));
 
-        assertThat(result.getErrorResult()).isEqualTo(MembShipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
+        assertThat(result.getErrorResult()).isEqualTo(MemberShipErrorResult.DUPLICATED_MEMBERSHIP_REGISTER);
     }
 }
