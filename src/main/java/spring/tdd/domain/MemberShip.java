@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,15 +25,16 @@ public class MemberShip {
     @Column(name = "memberShip_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "memberShip_name")
-    private String name;
+    private MemberShipType memberShipType;
 
     private int point;
 
     @Builder
-    public MemberShip(Long id, String name, int point) {
+    public MemberShip(Long id, MemberShipType memberShipType, int point) {
         this.id = id;
-        this.name = name;
+        this.memberShipType = memberShipType;
         this.point = point;
     }
 }
