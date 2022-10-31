@@ -74,4 +74,42 @@ public class MemberShipControllerTest {
         resultActions.andExpect(status().isBadRequest());
 
     }
+
+    @Test
+    void 멤버십등록실패_포인트가음수() throws Exception {
+
+        //given
+        final String url = "/api/v1/memberShip";
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(memberShipRequest(-1, MemberShipType.KAKAO)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void 멤버십등록실패_멤버십종류가Null() throws Exception {
+
+        //given
+        final String url = "/api/v1/memberShip";
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(memberShipRequest(-1, null)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+
+    }
 }
