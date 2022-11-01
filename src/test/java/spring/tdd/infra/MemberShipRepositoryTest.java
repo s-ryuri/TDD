@@ -50,7 +50,7 @@ public class MemberShipRepositoryTest {
 
         memberShipRepository.save(memberShip);
 
-        MemberShip findResult = memberShipRepository.findByUserIdAndMemberShipType("아이디!",MemberShipType.NAVER);
+        MemberShip findResult = memberShipRepository.findByUserIdAndMemberShipType("아이디!", MemberShipType.NAVER);
 
         assertThat(findResult.getId()).isNotNull();
         assertThat(findResult.getId()).isNotNull();
@@ -60,7 +60,7 @@ public class MemberShipRepositoryTest {
     }
 
     @Test
-    void 멤버십조희_사이즈가0(){
+    void 멤버십조희_사이즈가0() {
         //given
 
         //when
@@ -68,5 +68,19 @@ public class MemberShipRepositoryTest {
 
         //then
         assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    void 멤버십추가후삭제() {
+
+        final MemberShip naverMemberShip = MemberShip.builder()
+                                                     .userId("userId")
+                                                     .memberShipType(MemberShipType.NAVER)
+                                                     .point(10000)
+                                                     .build();
+
+        final MemberShip memberShip = memberShipRepository.save(naverMemberShip);
+
+        memberShipRepository.deleteById(memberShip.getId());
     }
 }
