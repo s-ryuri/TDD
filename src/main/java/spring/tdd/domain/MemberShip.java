@@ -41,4 +41,8 @@ public class MemberShip {
         this.memberShipType = memberShipType;
         this.point = point;
     }
+
+    public void changePoint(int price){
+        this.point = price;
+    }
 }

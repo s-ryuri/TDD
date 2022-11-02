@@ -181,4 +181,78 @@ public class MemberShipControllerTest {
         resultActions.andExpect(status().isOk());
 
     }
+
+    @Test
+    void 멤버십삭제실패_사용자식별값이헤더에없음() throws Exception {
+        final String url = "/api/v1/memberShip/-1";
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete(url)
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    void 멤버십삭제성공() throws Exception {
+        final String url = "/api/v1/memberShip/-1";
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+        );
+
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 멤버십적립실패_사용자식별값이헤더에없음() throws Exception {
+
+        final String url = "/api/v1/memberShip/-1/accumulate";
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .content(gson.toJson(memberShipRequest(10000,MemberShipType.KAKAO)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 멤버십적립실패_포인트가음수() throws Exception {
+        final String url = "/api/v1/memberShip/-1/accumulate";
+
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(memberShipRequest(-1, MemberShipType.KAKAO)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void 멤버십적립성공() throws Exception {
+        // given
+        final String url = "/api/v1/memberShip/-1/accumulate";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post(url)
+                                  .header(MemberShipConstants.USER_ID_HEAER, "12345")
+                                  .content(gson.toJson(membershipRequest(10000)))
+                                  .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+    private MemberShipRequest membershipRequest(final Integer point) {
+        return MemberShipRequest.builder()
+                                .point(point)
+                                .build();
+    }
 }

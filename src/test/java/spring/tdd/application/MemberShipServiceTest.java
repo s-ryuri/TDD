@@ -1,5 +1,6 @@
 package spring.tdd.application;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,9 @@ public class MemberShipServiceTest {
 
     @Mock
     private MemberShipRepository memberShipRepository;
+
+    @Mock
+    private RatePointService ratePointService;
 
     @Test
     void 멤버십_이미존재_등록실패() {
@@ -76,7 +80,7 @@ public class MemberShipServiceTest {
 
     private MemberShip memberShip() {
         return MemberShip.builder()
-                         .id(-1L)
+                         .id(1L)
                          .userId(userId)
                          .point(point)
                          .memberShipType(MemberShipType.NAVER)
@@ -121,7 +125,8 @@ public class MemberShipServiceTest {
         doReturn(Optional.empty()).when(memberShipRepository).findById(12345L);
 
         // when
-        final MemberShipException result = assertThrows(MemberShipException.class, () -> memberShipService.getMemberShip(12345L, "notowner"));
+        final MemberShipException result = assertThrows(MemberShipException.class,
+                                                        () -> memberShipService.getMemberShip(12345L, "notowner"));
 
         // then
         assertThat(result.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND);
@@ -131,10 +136,10 @@ public class MemberShipServiceTest {
     public void 멤버십상세조회성공() {
         // given
         doReturn(Optional.of(MemberShip.builder()
-                                 .memberShipType(MemberShipType.NAVER)
-                                 .point(10000)
-                                 .userId(userId)
-                                 .build())).when(memberShipRepository).findById(12345L);
+                                       .memberShipType(MemberShipType.NAVER)
+                                       .point(10000)
+                                       .userId(userId)
+                                       .build())).when(memberShipRepository).findById(12345L);
 
         // when
         final MemberShipDetailResponse result = memberShipService.getMemberShip(12345L, userId);
@@ -143,5 +148,47 @@ public class MemberShipServiceTest {
 
         assertThat(result.getMemberShipType()).isEqualTo(MemberShipType.NAVER);
         assertThat(result.getPoint()).isEqualTo(point);
+    }
+
+    @Test
+    void 멤버십삭제실패_존재하지않음() {
+
+        Long memberShipId = -1L;
+
+        doReturn(Optional.empty())
+            .when(memberShipRepository)
+            .findById(memberShipId);
+
+        final MemberShipException result = assertThrows(MemberShipException.class,
+                                                        () -> memberShipService.removeMemberShip(memberShipId, "notOwner"));
+
+        assertThat(result.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND);
+    }
+
+    @Test
+    void 멤버십삭제성공() {
+        final MemberShip memberShip = MemberShip.builder()
+                                                .id(1L)
+                                                .userId("1")
+                                                .point(point)
+                                                .memberShipType(MemberShipType.NAVER)
+                                                .build();
+        doReturn(Optional.of(memberShip)).when(memberShipRepository)
+                                         .findById(1L);
+
+        memberShipService.removeMemberShip(1L, "1");
+    }
+
+    @Test
+    void 멤버십적립실패_존재하지않음() {
+        doReturn(Optional.empty())
+            .when(memberShipRepository)
+            .findById(1L);
+
+        final MemberShipException result = assertThrows(MemberShipException.class,
+                                                          () -> memberShipService.accumulateMemberShipPoint(1L, "notOwner", 1000));
+
+        assertThat(result.getMemberShipErrorResult()).isEqualTo(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND);
+
     }
 }

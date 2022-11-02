@@ -1,15 +1,20 @@
 package spring.tdd.infra;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import spring.tdd.application.MemberShipException;
 import spring.tdd.domain.MemberShip;
 import spring.tdd.domain.MemberShipType;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 
 @DataJpaTest
 public class MemberShipRepositoryTest {

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class MemberShipService {
 
     private final MemberShipRepository memberShipRepository;
+    private final PointService ratePointService;
 
     @Transactional
     public MemberShipResponse registerMemberShip(String userId, MemberShipType memberShipType, int price) {
@@ -55,7 +56,7 @@ public class MemberShipService {
         final MemberShip memberShip = memberShipRepository.findById(memberShipId)
                                                           .orElseThrow(() -> new MemberShipException(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND));
 
-        if(!memberShip.getUserId().equals(userId)){
+        if (!memberShip.getUserId().equals(userId)) {
             throw new MemberShipException(MemberShipErrorResult.NOT_MEMBERSHIP_OWNER);
         }
         return MemberShipDetailResponse.builder()
@@ -63,5 +64,30 @@ public class MemberShipService {
                                        .memberShipType(memberShip.getMemberShipType())
                                        .point(memberShip.getPoint())
                                        .build();
+    }
+
+    public void removeMemberShip(final Long memberShipId, final String userId) {
+        final MemberShip memberShip = memberShipRepository.findById(memberShipId)
+                                                          .orElseThrow(() -> new MemberShipException(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND));
+        if(!memberShip.getUserId().equals(userId)){
+            throw new MemberShipException(MemberShipErrorResult.NOT_MEMBERSHIP_OWNER);
+        }
+
+        memberShipRepository.deleteById(memberShipId);
+
+    }
+
+    @Transactional
+    public void accumulateMemberShipPoint(final Long memberShipId,final String userId, final int amount){
+        final MemberShip memberShip = memberShipRepository.findById(memberShipId)
+                                                          .orElseThrow(() -> new MemberShipException(MemberShipErrorResult.MEMBERSHIP_NOT_FOUND));
+
+        if(!memberShip.getUserId().equals(userId)){
+            throw new MemberShipException(MemberShipErrorResult.NOT_MEMBERSHIP_OWNER);
+        }
+
+        final int additionalAmount = ratePointService.calculateAmount(amount);
+
+        memberShip.changePoint(additionalAmount + memberShip.getPoint());
     }
 }
